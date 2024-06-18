@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Application.Repositories
 {
-    public class UserRepository(AppDbContext db) : IUserRepository
+    public class UserRepository(AppDbContext db) 
+        : IUserRepository
     {
         private readonly AppDbContext db = db;
         public async Task Create(string userName, string hashedPassword)
@@ -19,6 +20,31 @@ namespace Backend.Application.Repositories
             );
 
             await db.SaveChangesAsync();
+        }
+
+        //v2
+        public async Task Create(User user)
+        {
+            if(user.Id > 0)
+            {
+                db.Users.Update(user);
+            }
+            else
+            {
+                await db.Users.AddAsync(user);
+            }
+
+            await db.SaveChangesAsync();
+        }
+
+
+        public async Task<User> GetById(int id)
+        {
+            var user = await db.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return user;
         }
 
         public async Task<User> GetByUserName(string userName)

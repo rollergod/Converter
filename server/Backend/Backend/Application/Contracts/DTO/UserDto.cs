@@ -6,5 +6,6 @@
         public string UserName { get; set; }
         public List<AccountDto> Accounts { get; set; }
         internal string Token { get; set; }
+        internal string RefreshToken { get; set; }
     }
 }

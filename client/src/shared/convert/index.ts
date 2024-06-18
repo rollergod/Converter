@@ -1,9 +1,8 @@
-import axios from "axios";
+import axiosInstance from "@/shared/api/axiosClient.ts";
 
 export const convertApi = (accountId: number) => {
-    return axios.post(
-        'https://localhost:7093/Convert',
-        {accountId: accountId},
-        {withCredentials: true}
+    return axiosInstance.post(
+        'convert',
+        {accountId: accountId}
     );
 }

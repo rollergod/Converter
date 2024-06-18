@@ -11,33 +11,26 @@ namespace Backend.Endpoints
     {
         public static void MapAccountEndpoints(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/Account",[Authorize] async (int userId, IAccountService accountService) =>
+            app.MapGet("/{userId}/accounts",[Authorize] async (int userId, IAccountService accountService) =>
             {
                 var accounts = await accountService.GetByUserId(userId);
 
                 return accounts;
-            });
+            }).WithTags("Account");
 
-            app.MapGet("/TransferAccounts", [Authorize] async (int userId, IAccountService accountService) =>
+            app.MapGet("/{userId}/transferAccounts", [Authorize] async (int userId, IAccountService accountService) =>
             {
                 var accounts = await accountService.GetAccountsForTransfer(userId);
 
                 return new TransferAccountsReponse { CurrentUserAccounts = accounts.Item1, TransferAccounts = accounts.Item2 };
-            });
+            }).WithTags("Account");
 
-            app.MapPost("/Account", [Authorize] async ([FromBody] CreateAccountRequest request, IAccountService accountService) =>
+            app.MapPost("/accounts", [Authorize] async ([FromBody] CreateAccountRequest request, IAccountService accountService) =>
             {
                 var result = await accountService.CreateAsync(request);
 
                 return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
-            });
-
-            app.MapPost("/Convert", [Authorize] async ([FromBody] ConvertRequest request, IAccountService accountService) =>
-            {
-                var result = await accountService.Convert(request.AccountId);
-
-                return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
-            });
+            }).WithTags("Account");
         }
     }
 }

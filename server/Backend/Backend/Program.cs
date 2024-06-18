@@ -48,10 +48,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtOptions:SecretKey").Value))
         };
 
-        //поверяем нашу куку на наличие токена
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -97,5 +97,6 @@ app.MapAccountEndpoints();
 app.MapCurrencyEndpoints();
 app.MapCurrencyConverterEndpoints();
 app.MapMoneyTransferEndpoints();
+app.ConvertEndpointsMap();
 
 app.Run();

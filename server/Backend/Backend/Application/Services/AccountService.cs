@@ -22,6 +22,11 @@ namespace Backend.Application.Services
             {
                 return Result.Failure<AccountDto>(AccountError.UserAlreadyExist);
             }
+            
+            if(accountsForUser.Count == 5)
+            {
+                return Result.Failure<AccountDto>(AccountError.CantCreateMore5Accounts);
+            }
 
             var newAccount = new Account
             {

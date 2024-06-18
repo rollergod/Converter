@@ -1,27 +1,59 @@
 import axios from "axios";
 
+const refreshExpiredTokenClosure = () => {
+    let isRefreshing = false;
+    let runningPromise: Promise<any> = undefined;
+
+    return () => {
+        if (isRefreshing) {
+            return runningPromise;
+        } else {
+            isRefreshing = true;
+            runningPromise = axiosInstance.post('auth/refresh')
+                .then(response => {
+                    isRefreshing = false;
+                    return response;
+                })
+                .catch(error => {
+                    isRefreshing = false;
+                    throw error;
+                });
+            return runningPromise;
+        }
+    };
+};
+
 const host: string = "https://localhost:7093/";
 
 const axiosInstance = axios.create({
     baseURL : `${host}`,
     withCredentials: true
 });
-
-// Добавьте перехватчик ответа
+const refreshExpiredToken = refreshExpiredTokenClosure();
 axiosInstance.interceptors.response.use(
     response => {
-        // Любой статус кода, который находится в диапазоне 2xx, вызывает эту функцию для обработки ответа
         return response;
     },
-    error => {
-        // Любой статус кода, который выходит за пределы диапазона 2xx, вызывает эту функцию для обработки ошибок
-        if (error.response && error.response.status === 401) {
-            // Перенаправляем на страницу логина
+    async error => {
+        const originalRequest = error.config;
+        if(error.response && error.response.status === 401 && !originalRequest._retry){
+            originalRequest._retry = true;
+
+            try {
+                await refreshExpiredToken();
+                return axios(originalRequest);
+            } catch (error) {
+                window.location.href = '/login';
+            }
+        }
+        else if(error.response && error.response.status === 401) {
             window.location.href = '/login';
         }
+
         return Promise.reject(error);
     }
 );
+
 
 export default axiosInstance;
 export const enum API_URLS {

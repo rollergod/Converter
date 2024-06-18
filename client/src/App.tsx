@@ -7,6 +7,7 @@ import {Coefficient} from "@/pages/Coefficient.tsx";
 import {TransferMoney} from "@/pages/TransferMoney.tsx";
 import {Toaster} from "react-hot-toast";
 import {TransferHistory} from "@/pages/TransferHistory.tsx";
+import {Currency} from "@/pages/Currency.tsx";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
             <Routes>
                 <Route path={'/login'} element={<Login/>}/>
                 <Route path={'/register'} element={<Register/>}/>
+                <Route path={'/currency'} element={<Currency/>}/>
                 <Route path={'/coefficients'} element={<Coefficient/>}/>
                 <Route path={'/transferHistory'} element={<TransferHistory/>}/>
                 <Route path={'/transfer'} element={<TransferMoney/>}/>

@@ -7,5 +7,6 @@ namespace Backend.Application.Interfaces.Services
     {
         Task<Result> Register(string userName, string password);
         Task<Result<UserDto>> Login(string userName, string password);
+        Task<Result<TokenDto>> RefreshToken(string accessToken, string refreshToken);
     }
 }

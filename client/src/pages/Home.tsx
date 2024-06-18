@@ -75,6 +75,7 @@ export const Home = () => {
                                     <>
                                         <Button className='m-1' disabled={accounts.length === 5 ? true : false}
                                                 onClick={() => setIsAddedAccount(true)}>Добавить счет</Button>
+                                        <Button className='m-1' onClick={() => navigate('/currency')}>Добавить валюту</Button>
                                         <Button className='m-1' onClick={() => navigate('/coefficients')}>Коэффициенты
                                             для перевода валюты</Button>
                                         <Button className='m-1' onClick={() => navigate('/transfer')}>

@@ -10,18 +10,18 @@ namespace Backend.Endpoints
     {
         public static void MapCurrencyConverterEndpoints(this IEndpointRouteBuilder app)
         {
-            app.MapPost("/Coefficients", [Authorize] async ([FromBody] CreateCurrencyConverter request, ICoefficientService coefficientService) =>
+            app.MapPost("/coefficients", [Authorize] async ([FromBody] CreateCurrencyConverter request, ICoefficientService coefficientService) =>
             {
                 var result = await coefficientService.CreateCoefficientAsync(request);
                 return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
-            });
+            }).WithTags("CurrencyConverter");
 
-            app.MapGet("/Coefficients", [Authorize] async (ICoefficientService coefficientService) =>
+            app.MapGet("/coefficients", [Authorize] async (ICoefficientService coefficientService) =>
             {
                 var currencyConverterDtos = await coefficientService.GetCurrencyConvertersAsync();
 
                 return currencyConverterDtos;
-            });
+            }).WithTags("CurrencyConverter");
         }
     }
 }

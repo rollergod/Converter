@@ -56,7 +56,6 @@ export const TransferHistory = () => {
         fetchTransferHistory();
 
         setFilterStore(user.id);
-
     }, []);
 
     const formScheme = z.object({
@@ -218,8 +217,8 @@ export const TransferHistory = () => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Отправить</Button>
-                    <Button onClick={() => navigate('/')}>На главную</Button>
+                    <Button className=' mb-2' type="submit">Отправить</Button>
+                    <Button className='ml-1' onClick={() => navigate('/')}>На главную</Button>
                 </form>
             </FormProvider>
 

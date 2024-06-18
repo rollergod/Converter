@@ -27,36 +27,33 @@ namespace Backend.Application.Services
             var outcomeTransfersDto = transfers
                 .SelectMany(x => x.TransfersFrom)
                 .GroupBy(x => x.TransferDate)
-                .Select(x => new AccountTransferHistoryDto
+                .Select(x => new DailyTransferSummaryDto
                 {
                     TransferedDate = x.Key,
-                    Amount = x.Sum(y => y.Amount)
+                    SpentAmount = x.Sum(y => y.Amount)
                 })
                 .ToList();
 
             var incomeTransfersDto = transfers
                 .SelectMany(x => x.TransfersTo)
                 .GroupBy(x => x.TransferDate)
-                .Select(x => new AccountTransferHistoryDto
+                .Select(x => new DailyTransferSummaryDto
                 {
                     TransferedDate = x.Key,
-                    Amount = x.Sum(y => y.Amount)
+                    ReceivedAmount = x.Sum(y => y.Amount)
                 })
                 .ToList();
 
-            var result = outcomeTransfersDto
-               .GroupJoin(
-                   incomeTransfersDto,
-                   outcome => outcome.TransferedDate,
-                   income => income.TransferedDate,
-                   (outcome, incomes) => new DailyTransferSummaryDto
-                   {
-                       TransferedDate = outcome.TransferedDate,
-                       SpentAmount = outcome.Amount,
-                       ReceivedAmount = incomes.Sum(x => x.Amount)
-                   })
-               .OrderBy(x => x.TransferedDate)
-               .ToList();
+            var result= outcomeTransfersDto
+                .Union(incomeTransfersDto)
+                .GroupBy(x => x.TransferedDate)
+                .Select(x => new DailyTransferSummaryDto
+                {
+                    TransferedDate = x.Key,
+                    SpentAmount = x.Sum(y => y.SpentAmount),
+                    ReceivedAmount = x.Sum(y => y.ReceivedAmount)
+                })
+                .ToList();
 
             return result;
         }

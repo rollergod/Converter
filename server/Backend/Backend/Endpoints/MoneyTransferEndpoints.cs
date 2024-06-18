@@ -10,7 +10,7 @@ namespace Backend.Endpoints
     {
         public static void MapMoneyTransferEndpoints(this IEndpointRouteBuilder app)
         {
-            app.MapPost("/TransferMoney", [Authorize] async ([FromBody] MoneyTransferRequest request, IMoneyTransferService moneyTransferService) =>
+            app.MapPost("/transfers", [Authorize] async ([FromBody] MoneyTransferRequest request, IMoneyTransferService moneyTransferService) =>
             {
                 var result = await moneyTransferService.TransferToPerson(
                     request.fromAccountId, 
@@ -19,9 +19,9 @@ namespace Backend.Endpoints
                 );
 
                 return result.IsSuccess ? Results.Ok() : result.ToProblemDetails();
-            });
+            }).WithTags("Transfer");
 
-            app.MapGet("/TransferMoney", [Authorize] async (
+            app.MapGet("/transfers/{userId}/history", [Authorize] async (
                 [FromQuery] int userId,
                 [FromQuery] DateTime startDate,
                 [FromQuery] DateTime endDate,
@@ -44,14 +44,14 @@ namespace Backend.Endpoints
                 var result = await moneyTransferService.GetTransferHistory(request);
 
                 return Results.Ok(result);
-            });
+            }).WithTags("Transfer");
 
-            app.MapGet("/TransferMoneyFilters", [Authorize] async (int userId, IMoneyTransferService moneyTransferService) =>
+            app.MapGet("/transfers/{userId}/filters", [Authorize] async (int userId, IMoneyTransferService moneyTransferService) =>
             {
                 var response = await moneyTransferService.GetFilters(userId);
 
                 return response;
-            });
+            }).WithTags("Transfer");
         }
     }
 }

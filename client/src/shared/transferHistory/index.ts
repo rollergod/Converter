@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/shared/api/axiosClient.ts";
 
 export const getTransferHistory = async (props: {
     userId: number,
@@ -7,9 +7,8 @@ export const getTransferHistory = async (props: {
     accountIds: string[],
     currencyIds: string[]
 }) => {
-    const promise = await axios.get('https://localhost:7093/TransferMoney',
+    const promise = await axiosInstance.get(`transfers/${props.userId}/history`,
         {
-            withCredentials: true,
             params: {
                 userId: props.userId,
                 startDate: props.startDate,
@@ -28,9 +27,8 @@ export const getTransferHistory = async (props: {
 
 export const getTransferHistoryFilters = async (userId: number) => {
 
-    const promise = await axios.get('https://localhost:7093/TransferMoneyFilters',
+    const promise = await axiosInstance.get(`transfers/${userId}/filters`,
         {
-            withCredentials: true,
             params: {
                 userId: userId
             }
@@ -41,8 +39,4 @@ export const getTransferHistoryFilters = async (userId: number) => {
     } else {
         return {}
     }
-
-    // .then((resp) => {
-    //     setFilterStore(resp.data);
-    // });
 }

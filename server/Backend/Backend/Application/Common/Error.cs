@@ -20,6 +20,8 @@
 
         public static Error Validation(string code, string description) =>
           new(code, description, ErrorType.Validation);
+        public static Error Auth(string code, string description) =>
+          new(code, description, ErrorType.Auth);
 
         public static readonly Error None = new(string.Empty, string.Empty, ErrorType.Conflict);
     }
@@ -68,6 +70,7 @@
     {
         Conflict = 0,
         Validation = 1,
-        NotFound = 2
+        NotFound = 2,
+        Auth = 3
     }
 }

@@ -72,7 +72,12 @@ namespace Backend.Application.Services
 
             var userAccounts = await _accountRepository.GetAccountsByUserId(user.Id);
 
-            var token = _jwtGenerator.Generate(user);
+            var tokenDto = _jwtGenerator.GenerateWithRefreshToken(user);
+
+            user.RefreshToken = tokenDto.RefreshToken;
+            user.ExpiryRefreshTokenTime = tokenDto.RefreshTokenExpiration;
+
+            await _userRepository.Create(user);
 
             var dto = new UserDto
             {
@@ -87,10 +92,40 @@ namespace Backend.Application.Services
                     SecondCurrencyName = x.SecondCurrency.Name,
                     IsFirstCurrencyMain = x.MainCurrencyId == x.FirstCurrencyId
                 }).ToList(),
-                Token = token
+                Token = tokenDto.AccessToken,
+                RefreshToken = tokenDto.RefreshToken
             };
 
             return Result.Success<UserDto>(dto);
         }
+
+        public async Task<Result<TokenDto>> RefreshToken(string accessToken, string refreshToken)
+        {
+            var resultClaim = _jwtGenerator.GetUserIdFromAccessToken(accessToken);
+
+            if (resultClaim.IsFailure)
+            {
+                return Result.Failure<TokenDto>(resultClaim.Error);
+            }
+
+            var userId = Convert.ToInt32(resultClaim.Value);
+
+            var user = await _userRepository.GetById(userId);
+
+            if(user == null && user.RefreshToken != refreshToken)
+            {
+                return Result.Failure<TokenDto>(AuthError.BadAuth);
+            }
+
+            var newTokens = _jwtGenerator.GenerateWithRefreshToken(user);
+
+            user.RefreshToken = newTokens.RefreshToken;
+            user.ExpiryRefreshTokenTime = newTokens.RefreshTokenExpiration;
+
+            await _userRepository.Create(user);
+
+            return Result.Success<TokenDto>(newTokens);
+        }
+       
     }
 }
