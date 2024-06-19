@@ -9,8 +9,6 @@ interface Option {
 interface filterStore {
     accountOptions: Option[],
     currencyOptions: Option[],
-    // setData: (data: { accountOptions: Option[], currencyOptions: Option[] }) => void,
-
     setData: (userId: number) => void
 }
 

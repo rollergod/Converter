@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {z} from "zod";
-import {useQueryStore} from "@/store/TransferHistoryFilters/trasnferHistoryQueryFilter.ts";
 import {FormProvider, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
@@ -16,21 +15,24 @@ import {usePersonStore} from "@/entities/User/userStore.ts";
 import {useNavigate} from "react-router-dom";
 import {getTransferHistory} from "@/shared/transferHistory";
 import {useTransferHistoryFilterStore} from "@/entities/TransferHistory/transferHistoryFilterStore.ts";
-
-interface TransferDto {
-    transferedDate: Date,
-    spentAmount: number,
-    receivedAmount: number
-}
+import {DailyTransferHistory, Query} from "@/shared/transferHistory/model.ts";
+import {getOneMonthAgoDate} from "@/features/dateService.ts";
 
 export const TransferHistory = () => {
 
     const navigate = useNavigate();
 
     const user = usePersonStore(x => x.user)!;
-    const query = useQueryStore(x => x.query);
+    // const query = useQueryStore(x => x.query);
 
-    const [data, setData] = useState<TransferDto[]>([])
+    const query :Query= {
+        startDate: getOneMonthAgoDate(),
+        endDate: new Date(),
+        accountIds: [],
+        currencyIds: []
+    };
+
+    const [data, setData] = useState<DailyTransferHistory[]>([])
 
     const setFilterStore = useTransferHistoryFilterStore(x => x.setData);
     const currencyOptions = useTransferHistoryFilterStore(x => x.currencyOptions);

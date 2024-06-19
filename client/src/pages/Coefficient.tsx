@@ -63,7 +63,7 @@ export const Coefficient = () => {
             loading: "Загрузка ...",
             success: resp => {
                 if (resp.status >= 400) {
-                    throw new Error(`Statues code ${resp.status}`);
+                    throw new Error(`Ошибка - ${resp.status}`);
                 }
                 setCoefficients(prev =>
                     [...prev,

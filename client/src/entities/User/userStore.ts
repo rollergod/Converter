@@ -23,7 +23,7 @@ export const usePersonStore = create<userStore>()(
                     success: (resp) => {
 
                         if (resp.status >= 400) {
-                            throw new Error(`Statues code ${resp.status}`);
+                            throw new Error(`Ошибка -  ${resp.status}`);
                         }
 
                         const user: User = resp.data;

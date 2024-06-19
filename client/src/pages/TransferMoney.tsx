@@ -88,7 +88,7 @@ export const TransferMoney = () => {
             loading: "Загрузка ...",
             success: data => {
                 if (data.status >= 400) {
-                    throw new Error(`Statues code ${data.status}`);
+                    throw new Error(`Ошибка - ${data.status}`);
                 }
 
                 navigate('/');
