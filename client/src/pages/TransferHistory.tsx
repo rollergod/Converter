@@ -23,7 +23,6 @@ export const TransferHistory = () => {
     const navigate = useNavigate();
 
     const user = usePersonStore(x => x.user)!;
-    // const query = useQueryStore(x => x.query);
 
     const query :Query= {
         startDate: getOneMonthAgoDate(),

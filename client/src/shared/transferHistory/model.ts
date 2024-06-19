@@ -4,7 +4,6 @@ export interface DailyTransferHistory {
     receivedAmount: number
 }
 
-
 export interface Query {
     startDate: Date,
     endDate: Date,
